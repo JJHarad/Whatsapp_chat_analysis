@@ -60,4 +60,16 @@ if uploaded_file is not None:
             with col2:
                 st.dataframe(new_df)
 
+            # Most common words
+            st.title("Most Common Words")
+            most_common_df = helper.most_common_words(selected_user, df)
+            col1, col2 = st.columns(2)  # This will equally split the screen into two columns
 
+            with col1:  # to show the graph
+                st.dataframe(most_common_df)
+
+            with col2:  # to show the dataframe of the graph
+                fig, ax = plt.subplots(figsize=(12, 10))  # Adjust the width and height here
+                ax.barh(most_common_df[0], most_common_df[1])  # barh is a kind of horizontal plot
+                plt.xticks(rotation='vertical')
+                st.pyplot(fig)
