@@ -1,17 +1,17 @@
 def fetch_stats(selected_user, df):
-    if selected_user == 'Overall':
-        # Number of messages
-        num_messages = df.shape[0]
-        # Number of words
-        words = []
-        for message in df['messages']:
-            words.extend(message.split())
-        return num_messages, len(words)
+    if selected_user != 'Overall':
+        df = df[df['users'] == selected_user]
 
-    else:
-        new_df = df[df['users'] == selected_user]
-        num_messages = new_df.shape[0]
-        words = []
-        for message in new_df['messages']:
-            words.extend(message.split())
-        return num_messages, len(words)
+    # Number of messages
+    num_messages = df.shape[0]
+
+    # Number of words
+    words = []
+    for message in df['messages']:  # Ensure 'messages' is the correct column name
+        words.extend(message.split())
+
+    # Number of media messages
+    num_media_messages = df[df['messages'] == '<Media omitted>\n'].shape[0]  # Adjust string as needed
+
+
+    return num_messages, len(words), num_media_messages
