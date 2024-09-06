@@ -73,3 +73,17 @@ if uploaded_file is not None:
                 ax.barh(most_common_df[0], most_common_df[1])  # barh is a kind of horizontal plot
                 plt.xticks(rotation='vertical')
                 st.pyplot(fig)
+
+#Emoji Analysis
+
+    emoji_df = helper.emoji_helper(selected_user, df)
+    st.title("Emoji Analysis")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.dataframe(emoji_df)
+    with col2:
+        fig, ax = plt.subplots()
+        ax.pie(emoji_df[1].head(7), labels=emoji_df[0].head(7), autopct="%0.2f")
+        st.pyplot(fig)
