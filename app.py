@@ -1,6 +1,6 @@
 import streamlit as st
 from matplotlib import pyplot as plt
-
+import seaborn as sns
 import preprocessor
 import helper
 
@@ -17,7 +17,7 @@ if uploaded_file is not None:
     df = preprocessor.preprocess(data)
 
     # Display the dataframe
-    st.dataframe(df)
+  #  st.dataframe(df)
 
     # Find unique users
     user_list = df['users'].unique().tolist()
@@ -30,8 +30,10 @@ if uploaded_file is not None:
     if st.sidebar.button("Show Analysis"):
         num_messages, num_words , num_media_messages, num_links = helper.fetch_stats(selected_user, df)
 
+        st.title("Top Statistics")
         # Display the results in columns
         col1, col2, col3, col4 = st.columns(4)
+
         with col1:
             st.header("Total Messages")
             st.title(num_messages)
@@ -87,3 +89,46 @@ if uploaded_file is not None:
         fig, ax = plt.subplots()
         ax.pie(emoji_df[1].head(7), labels=emoji_df[0].head(7), autopct="%0.2f")
         st.pyplot(fig)
+
+#Monthly Timeline Analysis
+    st.title("Monthly Timeline")
+    timeline = helper.monthly_timeline(selected_user, df)
+    fig,ax=plt.subplots()
+    ax.plot(timeline['time'], timeline['messages'], color='green')
+    plt.xticks(rotation='vertical')
+    st.pyplot(fig)
+
+#Daily Timeline Analysis
+    st.title("Daily Timeline")
+    d_timeline = helper.daily_timeline(selected_user, df)
+    fig, ax = plt.subplots()
+    ax.plot(d_timeline['only_date'], d_timeline['messages'], color='black')
+    plt.xticks(rotation='vertical')
+    st.pyplot(fig)
+
+#Activity Analysis
+    st.title("Activity Map")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.header("Most Busy Day")
+        busy_day = helper.Weekly_activity(selected_user, df)
+        fig,ax=plt.subplots()
+        ax.bar(busy_day.index, busy_day.values)
+        plt.xticks(rotation='vertical', color='green')
+        st.pyplot(fig)
+
+    with col2:
+        st.header("Most Busy Month")
+        busy_month = helper.Monthly_activity(selected_user, df)
+        fig, ax = plt.subplots()
+        ax.bar(busy_month.index, busy_month.values, color='green')
+        plt.xticks(rotation='vertical')
+        st.pyplot(fig)
+
+# Activity Heat Map
+    st.title("Activity Heat Map")
+    activity_heatmap=helper.Activity_heatmap(selected_user, df)
+    fig, ax = plt.subplots()
+    ax= sns.heatmap(activity_heatmap)
+    st.pyplot(fig)

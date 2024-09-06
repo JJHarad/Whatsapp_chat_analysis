@@ -66,3 +66,44 @@ def emoji_helper(selected_user, df):  # function to analyze emojis
 
     emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))
     return emoji_df
+
+def monthly_timeline(selected_user, df):
+    if selected_user != 'Overall':
+        df = df[df['users'] == selected_user]
+
+    timeline = df.groupby(['year', 'month', 'month_num']).count()['messages'].reset_index()
+
+    time = []
+    for i in range(timeline.shape[0]):
+        time.append(timeline['month'][i] + "-" + str(timeline['year'][i]))
+
+    timeline['time']=time
+
+    return timeline
+
+def daily_timeline(selected_user, df):
+    if selected_user != 'Overall':
+        df = df[df['users'] == selected_user]
+
+    daily_timeline = df.groupby('only_date').count()['messages'].reset_index()
+    return daily_timeline
+
+def Weekly_activity(selected_user, df):  # function to analyze emojis
+    if selected_user != 'Overall':
+        df = df[df['users'] == selected_user]
+
+    return df['day_name'].value_counts()
+
+def Monthly_activity(selected_user, df):
+    if selected_user != 'Overall':
+        df = df[df['users'] == selected_user]
+
+    return df['month'].value_counts()
+
+
+def Activity_heatmap(selected_user , df):
+    if selected_user != 'Overall':
+        df = df[df['users'] == selected_user]
+
+    activity_heatmap = df.pivot_table(index='day_name', columns='period', values='messages', aggfunc='count').fillna(0)
+    return activity_heatmap
